@@ -12,3 +12,8 @@ docs/
 
 # Dotenv file
 ./*.env.local
+node_modules/
+.DS_Store
+.vscode/
+.idea/
+.env

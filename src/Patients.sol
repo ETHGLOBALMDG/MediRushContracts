@@ -7,28 +7,19 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 // Inherit from Ownable to get ownership features
 contract Patients is Ownable {
 
-    struct patientDetails {
-        bool isRegistered; 
-        bool IDvalid;
-        string nationality;
-        uint256 age;
-    } 
-
     constructor() Ownable(msg.sender) {
     }
     
-    mapping (address => patientDetails) public registeredPatients; 
+    mapping (address => bool) public registeredPatients; 
 
     /**
      * @notice Adds a new patient to the system. Can only be called by the contract owner.
      * @param _patientAddress The wallet address of the patient being added.
-     * @param _idvalid The validity status of the patient's ID.
-     * @param _nationality The patient's nationality.
-     * @param _age The patient's age.
+     * @param _isRegistered If the patient is registered
      */
-    function addPatient(address _patientAddress, bool _idvalid, string memory _nationality, uint256 _age) public onlyOwner {
-        require(!registeredPatients[_patientAddress].isRegistered, "Patient already registered.");
-        registeredPatients[_patientAddress] = patientDetails(true, _idvalid, _nationality, _age);
+    function addPatient(address _patientAddress, bool _isRegistered) public onlyOwner {
+        require(!registeredPatients[_patientAddress], "Patient already registered.");
+        registeredPatients[_patientAddress] = _isRegistered;
     }
 
     /**
@@ -36,7 +27,7 @@ contract Patients is Ownable {
      * @return bool True if the patient exists, false otherwise.
      */
     function checkPatient() public view returns (bool){
-        return registeredPatients[msg.sender].isRegistered;
+        return registeredPatients[msg.sender];
     }
 
     /**
@@ -44,18 +35,18 @@ contract Patients is Ownable {
      * @param _walletAddress The address of_patientID the patient to look up.
      * @return The patientDetails struct for the given address.
      */
-    function fetchPatient(address _walletAddress) public view returns (patientDetails memory) {
-        require(registeredPatients[_walletAddress].isRegistered, "Patient not found.");
-        return registeredPatients[_walletAddress];
-    } 
+    //   function fetchPatient(address _walletAddress) public view returns (patientDetails memory) {
+    //     require(registeredPatients[_walletAddress].isRegistered, "Patient not found.");
+    //     return registeredPatients[_walletAddress];
+    // } 
 
     /**
      * @notice Allows the service toggle patient ID validity status.
      */
-    function toggleIDstatus() public onlyOwner {
-        require(registeredPatients[msg.sender].isRegistered, "Patient not registered.");
+    // function toggleIDstatus() public onlyOwner {
+    //     require(registeredPatients[msg.sender].isRegistered, "Patient not registered.");
         
-        patientDetails storage patient = registeredPatients[msg.sender];
-        patient.IDvalid = !patient.IDvalid;
-    }
+    //     patientDetails storage patient = registeredPatients[msg.sender];
+    //     patient.IDvalid = !patient.IDvalid;
+    // }
 }
